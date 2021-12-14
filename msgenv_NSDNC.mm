@@ -9,15 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "msgenv_NSDNC.h"
 
+using namespace MsgEnv;
+
 void notification_callback(CFNotificationCenterRef center,
-				  void* observer,
+				  void* p_observer,
 				  CFNotificationName name,
 				  const void* object,
 				  CFDictionaryRef userInfo)
 {
 	NSString *nsstr_name= (__bridge NSString *)name;
 	NSString *nsstr_obj= (__bridge NSString *)object;
-	((t_handler_ptr)observer)(nsstr_name, nsstr_obj);
+	((tp_handler)p_observer)(nsstr_name, nsstr_obj);
 }
 
 // Sandboxing:
@@ -27,11 +29,11 @@ void notification_callback(CFNotificationCenterRef center,
 
 @implementation MsgEnv_NSDNC
 
-+ (void) subscribe:(t_handler_ptr)handler_ptr
++ (void) subscribe:(tp_handler)p_handler;
 {
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
 	CFNotificationCenterAddObserver(ncref_Distributed,				// CFNotificationCenterRef center
-									(const void*)handler_ptr,		// const void *observer
+									(const void*)p_handler,			// const void *observer
 									notification_callback,			// CFNotificationCallback callBack
 									NULL, 							// CFStringRef name
 									NULL, 							// const void *object
@@ -39,11 +41,11 @@ void notification_callback(CFNotificationCenterRef center,
 		);
 }
 
-+ (void) unsubscribe:(t_handler_ptr)handler_ptr
++ (void) unsubscribe:(tp_handler)p_handler;
 {
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
 	CFNotificationCenterRemoveObserver(ncref_Distributed,			// CFNotificationCenterRef center
-									   (const void*)handler_ptr,	// const void *observer
+									   (const void*)p_handler,		// const void *observer
 									   NULL, 						// CFNotificationName name
 									   NULL							// const void *object
 		);

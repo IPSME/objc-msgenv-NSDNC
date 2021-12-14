@@ -6,14 +6,29 @@
 //  Copyright © 2021 Root Interface. All rights reserved.
 //
 
-// The (const void*) is NULL, unless the Reflector hack below is used
-//
-typedef void (*t_handler_ptr)(NSString*,NSString*);
-						  
+namespace MsgEnv
+{
+	// The (const void*) is NULL, unless the Reflector hack below is used
+	//
+	typedef void (*tp_handler)(NSString*,NSString*);
+}
+	
 @interface MsgEnv_NSDNC : NSObject
 
-+ (void) subscribe:(t_handler_ptr)handler_ptr;
-+ (void) unsubscribe:(t_handler_ptr)handler_ptr;
+// https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
+// For multithreaded applications running in macOS 10.3 and later,
+// distributed notifications are always delivered to the main thread.
+//
++ (void) subscribe:(MsgEnv::tp_handler)p_handler;
++ (void) unsubscribe:(MsgEnv::tp_handler)p_handler;
+
+// https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
+// Posting a distributed notification is an expensive operation. The notification gets sent to a
+// system-wide server that distributes it to all the tasks that have objects registered for distributed
+// notifications. The latency between posting the notification and the notification’s arrival in
+// another task is unbounded. In fact, when too many notifications are posted and the server’s queue
+// fills up, notifications may be dropped.
+//
 + (void) publish:(NSString*)nsstr;
 
 @end
