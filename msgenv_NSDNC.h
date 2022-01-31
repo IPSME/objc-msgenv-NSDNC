@@ -5,21 +5,19 @@
 //  Copyright © 2021 Root Interface. All rights reserved.
 //
 
-namespace IPSME
-{
-	// The second NSString* is NULL, unless the Reflector hack below is used
-	//
-	typedef void (*tp_handler)(NSString*,NSString*);
-}
-	
+// The second NSString* is NULL, unless the Reflector hack below is used
+//
+typedef void (*tp_handler)(NSString*,NSString*);
+
+
 @interface IPSME_MsgEnv : NSObject
 
 // https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
 // For multithreaded applications running in macOS 10.3 and later,
 // distributed notifications are always delivered to the main thread.
 //
-+ (void) subscribe:(IPSME::tp_handler)p_handler;
-+ (void) unsubscribe:(IPSME::tp_handler)p_handler;
++ (void) subscribe:(tp_handler)p_handler;
++ (void) unsubscribe:(tp_handler)p_handler;
 
 // https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
 // Posting a distributed notification is an expensive operation. The notification gets sent to a

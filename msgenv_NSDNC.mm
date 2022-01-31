@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "msgenv_NSDNC.h"
 
-using namespace IPSME;
-
 void notification_callback(CFNotificationCenterRef center,
 				  void* p_observer,
 				  CFNotificationName name,
