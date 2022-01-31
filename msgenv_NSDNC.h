@@ -1,26 +1,25 @@
 //
 //  msgenv_NSDNC.h
-//  objc-zmq-reflector
 //
 //  Created by dev on 2021-10-27.
 //  Copyright © 2021 Root Interface. All rights reserved.
 //
 
-namespace MsgEnv
+namespace IPSME
 {
-	// The (const void*) is NULL, unless the Reflector hack below is used
+	// The second NSString* is NULL, unless the Reflector hack below is used
 	//
 	typedef void (*tp_handler)(NSString*,NSString*);
 }
 	
-@interface MsgEnv_NSDNC : NSObject
+@interface IPSME_MsgEnv : NSObject
 
 // https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
 // For multithreaded applications running in macOS 10.3 and later,
 // distributed notifications are always delivered to the main thread.
 //
-+ (void) subscribe:(MsgEnv::tp_handler)p_handler;
-+ (void) unsubscribe:(MsgEnv::tp_handler)p_handler;
++ (void) subscribe:(IPSME::tp_handler)p_handler;
++ (void) unsubscribe:(IPSME::tp_handler)p_handler;
 
 // https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
 // Posting a distributed notification is an expensive operation. The notification gets sent to a
@@ -37,7 +36,7 @@ namespace MsgEnv
 // which in turn can be used to remove ricocheted messages
 // e.g., send a UUID and drop incoming messages with that UUID
 //
-@interface MsgEnv_NSDNC (Reflector)
+@interface IPSME_MsgEnv (Reflector)
 
 + (void) publish:(NSString*)nsstr withObject:(NSString*)object;
 

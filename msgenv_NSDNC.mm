@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "msgenv_NSDNC.h"
 
-using namespace MsgEnv;
+using namespace IPSME;
 
 void notification_callback(CFNotificationCenterRef center,
 				  void* p_observer,
@@ -27,7 +27,7 @@ void notification_callback(CFNotificationCenterRef center,
 //		https://developer.apple.com/forums/thread/129437
 // Example: https://github.com/RabbitMC/DistributedNotifications/blob/master/DistributedNotifications/NotificationsManager/NotificationsManager.m
 
-@implementation MsgEnv_NSDNC
+@implementation IPSME_MsgEnv
 
 + (void) subscribe:(tp_handler)p_handler;
 {
@@ -64,7 +64,7 @@ void notification_callback(CFNotificationCenterRef center,
 
 @end
 
-@implementation MsgEnv_NSDNC (Reflector)
+@implementation IPSME_MsgEnv (Reflector)
 
 
 // Even though object is a (const void*), if you don't pass an NSString*,
