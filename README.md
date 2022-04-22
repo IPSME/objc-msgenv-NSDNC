@@ -1,4 +1,5 @@
 ## objc-msgenv-NSDNC
+Requires c++17.
 
 Yes, the ME for macOS, is that simple!
 
