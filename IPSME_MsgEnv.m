@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "msgenv_NSDNC.h"
+#import "IPSME_MsgEnv.h"
 
 void notification_callback(CFNotificationCenterRef center,
 				  void* p_observer,
