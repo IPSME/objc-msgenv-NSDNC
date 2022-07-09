@@ -9,15 +9,22 @@
 #import <Foundation/Foundation.h>
 #import "IPSME_MsgEnv.h"
 
+NSString* gk_NAME= @"IPSME";
+NSString* gk_MSG= @"msg";
+
 void notification_callback(CFNotificationCenterRef center,
 				  void* p_observer,
 				  CFNotificationName name,
 				  const void* object,
 				  CFDictionaryRef userInfo)
 {
-	NSString *nsstr_name= (__bridge NSString *)name;
-	NSString *nsstr_obj= (__bridge NSString *)object;
-	((tp_handler)p_observer)(nsstr_name, nsstr_obj);
+	// NSString *nsstr_name= (__bridge NSString *)name; // == @"IPSME"
+    NSString *nsstr_obj= (__bridge NSString *)object;
+    NSDictionary* nsdic_userInfo= (__bridge NSDictionary*)userInfo;
+    NSString* nsstr_msg= nsdic_userInfo[gk_MSG];
+    assert(nsstr_msg != nil);
+    
+	((tp_handler)p_observer)(nsstr_msg, nsstr_obj);
 }
 
 // Sandboxing:
@@ -30,11 +37,11 @@ void notification_callback(CFNotificationCenterRef center,
 + (void) subscribe:(tp_handler)p_handler;
 {
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
-	CFNotificationCenterAddObserver(ncref_Distributed,				// CFNotificationCenterRef center
-									(const void*)p_handler,			// const void *observer
-									notification_callback,			// CFNotificationCallback callBack
-									NULL, 							// CFStringRef name
-									NULL, 							// const void *object
+	CFNotificationCenterAddObserver(ncref_Distributed,				        // CFNotificationCenterRef center
+									(const void*)p_handler,		          	// const void *observer
+									notification_callback,		        	// CFNotificationCallback callBack
+									(__bridge CFStringRef)gk_NAME,          // CFStringRef name
+									NULL, 						        	// const void *object
 									CFNotificationSuspensionBehaviorDeliverImmediately // CFNotificationSuspensionBehavior suspensionBehavior
 		);
 }
@@ -42,21 +49,25 @@ void notification_callback(CFNotificationCenterRef center,
 + (void) unsubscribe:(tp_handler)p_handler;
 {
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
-	CFNotificationCenterRemoveObserver(ncref_Distributed,			// CFNotificationCenterRef center
-									   (const void*)p_handler,		// const void *observer
-									   NULL, 						// CFNotificationName name
-									   NULL							// const void *object
+	CFNotificationCenterRemoveObserver(ncref_Distributed,		        	// CFNotificationCenterRef center
+									   (const void*)p_handler,	        	// const void *observer
+                                       (__bridge CFStringRef)gk_NAME,       // CFNotificationName name
+									   NULL					    	    	// const void *object
 		);
 }
 
 + (void) publish:(NSString*)nsstr
 {
+    NSDictionary* nsdic= @{
+        gk_MSG : nsstr
+    };
+    
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
-	CFNotificationCenterPostNotification(ncref_Distributed,				// CFNotificationCenterRef center
-										 (__bridge CFStringRef)nsstr,	// CFNotificationName name
-										 NULL,							// const void *object
-										 NULL,							// CFDictionaryRef userInfo
-										 YES							// Boolean deliverImmediately
+	CFNotificationCenterPostNotification(ncref_Distributed,			    	// CFNotificationCenterRef center
+                                         (__bridge CFStringRef)gk_NAME,     // CFNotificationName name
+										 NULL,					    		// const void *object
+										 (__bridge CFDictionaryRef)nsdic,   // CFDictionaryRef userInfo
+										 YES					    		// Boolean deliverImmediately
 		);
 }
 
@@ -70,12 +81,16 @@ void notification_callback(CFNotificationCenterRef center,
 //
 + (void) publish:(NSString*)nsstr withObject:(NSString*)object
 {
+    NSDictionary* nsdic= @{
+        gk_MSG : nsstr
+    };
+    
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
-	CFNotificationCenterPostNotification(ncref_Distributed,				// CFNotificationCenterRef center
-										 (__bridge CFStringRef)nsstr,	// CFNotificationName name
-										 (__bridge CFStringRef)object,	// const void *object
-										 NULL,							// CFDictionaryRef userInfo
-										 YES							// Boolean deliverImmediately
+	CFNotificationCenterPostNotification(ncref_Distributed,			    	// CFNotificationCenterRef center
+                                         (__bridge CFStringRef)gk_NAME,     // CFNotificationName name
+										 (__bridge CFStringRef)object,  	// const void *object
+                                         (__bridge CFDictionaryRef)nsdic,   // CFDictionaryRef userInfo
+										 YES						    	// Boolean deliverImmediately
 		);
 }
 
