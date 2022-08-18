@@ -7,7 +7,7 @@
 
 // The second NSString* is NULL, unless the Reflector hack below is used
 //
-typedef void (*tp_handler)(NSString*,NSString*);
+typedef void (*tp_handler)(NSString* nsstr_msg, NSString*);
 
 
 @interface IPSME_MsgEnv : NSObject
