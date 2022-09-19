@@ -24,7 +24,14 @@ void notification_callback(CFNotificationCenterRef center,
     NSString* nsstr_msg= nsdic_userInfo[gk_MSG];
     assert(nsstr_msg != nil);
     
-	((tp_handler)p_observer)(nsstr_msg, nsstr_obj);
+	// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Exceptions/Tasks/HandlingExceptions.html
+	@try {
+		((tp_handler)p_observer)(nsstr_msg, nsstr_obj);
+	}
+	@catch (NSException* e) {
+		// NSLog(@"notification_callback: DROP!");
+		assert(false);
+	}
 }
 
 // Sandboxing:
