@@ -7,7 +7,7 @@
 
 // The second NSString* is NULL, unless the Reflector hack below is used
 //
-typedef void (*tp_handler)(NSString* nsstr_msg, NSString*);
+typedef void (*tp_handler)(id id_msg, NSString*);
 
 
 @interface IPSME_MsgEnv : NSObject
@@ -26,7 +26,7 @@ typedef void (*tp_handler)(NSString* nsstr_msg, NSString*);
 // another task is unbounded. In fact, when too many notifications are posted and the server’s queue
 // fills up, notifications may be dropped.
 //
-+ (void) publish:(NSString*)nsstr;
++ (void) publish:(id)msg;
 
 @end
 
@@ -36,6 +36,6 @@ typedef void (*tp_handler)(NSString* nsstr_msg, NSString*);
 //
 @interface IPSME_MsgEnv (Reflector)
 
-+ (void) publish:(NSString*)nsstr withObject:(NSString*)object;
++ (void) publish:(id)msg withObject:(NSString*)object;
 
 @end

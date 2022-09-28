@@ -21,12 +21,12 @@ void notification_callback(CFNotificationCenterRef center,
 	// NSString *nsstr_name= (__bridge NSString *)name; // == @"IPSME"
     NSString *nsstr_obj= (__bridge NSString *)object;
     NSDictionary* nsdic_userInfo= (__bridge NSDictionary*)userInfo;
-    NSString* nsstr_msg= nsdic_userInfo[gk_MSG];
-    assert(nsstr_msg != nil);
+	id id_msg= nsdic_userInfo[gk_MSG];
+    assert(id_msg != nil);
     
 	// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Exceptions/Tasks/HandlingExceptions.html
 	@try {
-		((tp_handler)p_observer)(nsstr_msg, nsstr_obj);
+		((tp_handler)p_observer)(id_msg, nsstr_obj);
 	}
 	@catch (NSException* e) {
 		// NSLog(@"notification_callback: DROP!");
@@ -63,10 +63,10 @@ void notification_callback(CFNotificationCenterRef center,
 		);
 }
 
-+ (void) publish:(NSString*)nsstr
++ (void) publish:(id)msg
 {
     NSDictionary* nsdic= @{
-        gk_MSG : nsstr
+        gk_MSG : msg
     };
     
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
@@ -86,10 +86,10 @@ void notification_callback(CFNotificationCenterRef center,
 // Even though object is a (const void*), if you don't pass an NSString*,
 // you get an access exception.
 //
-+ (void) publish:(NSString*)nsstr withObject:(NSString*)object
++ (void) publish:(id)msg withObject:(NSString*)object
 {
     NSDictionary* nsdic= @{
-        gk_MSG : nsstr
+        gk_MSG : msg
     };
     
 	CFNotificationCenterRef ncref_Distributed = CFNotificationCenterGetDistributedCenter();
