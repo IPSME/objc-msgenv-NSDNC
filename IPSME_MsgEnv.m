@@ -1,6 +1,5 @@
 //
 //  msgenv_NSDNC.m
-//  objc-zmq-reflector
 //
 //  Created by dev on 2021-10-27.
 //  Copyright © 2021 Root Interface. All rights reserved.
@@ -28,7 +27,7 @@ void notification_callback(CFNotificationCenterRef center,
 	@try {
 		((tp_handler)p_observer)(id_msg, nsstr_obj);
 	}
-	@catch (NSException* e) {
+	@catch (id ue) {
 		// NSLog(@"notification_callback: DROP!");
 		assert(false);
 	}
