@@ -16,8 +16,8 @@ typedef void (*tp_handler)(NSString*,NSString*);
 // For multithreaded applications running in macOS 10.3 and later,
 // distributed notifications are always delivered to the main thread.
 //
-+ (void) subscribe:(tp_handler)p_handler;
-+ (void) unsubscribe:(tp_handler)p_handler;
++ (void) subscribe:(tp_handler)p_handler DEPRECATED_MSG_ATTRIBUTE("Apple silently fails to support nil as name, contrary to docs; use repo branch: userInfo");
++ (void) unsubscribe:(tp_handler)p_handler DEPRECATED_MSG_ATTRIBUTE("Apple silently fails to support nil as name, contrary to docs; use repo branch: userInfo");
 
 // https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter
 // Posting a distributed notification is an expensive operation. The notification gets sent to a
@@ -26,7 +26,7 @@ typedef void (*tp_handler)(NSString*,NSString*);
 // another task is unbounded. In fact, when too many notifications are posted and the server’s queue
 // fills up, notifications may be dropped.
 //
-+ (void) publish:(NSString*)nsstr;
++ (void) publish:(NSString*)nsstr DEPRECATED_MSG_ATTRIBUTE("Apple silently fails to support nil as name, contrary to docs; use repo branch: userInfo");
 
 @end
 
