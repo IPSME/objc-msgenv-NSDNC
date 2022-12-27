@@ -1,7 +1,11 @@
 ## objc-msgenv-NSDNC
 Requires c++17.
 
-Yes, the ME for macOS, is that simple!
+**Yes, the ME for macOS, is this simple!**
+
+Unfortunately due to a bug in Apple's code. When "nil" is specified as name when subscribing as an observer, the notification center should send out all notifications when the app is not sandboxed. However, this is not the case.  Apple needs to update the documentation or fix the code.
+
+https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter/1414151-addobserver
 
 ```
 #import "msgenv_NSDNC.h"
