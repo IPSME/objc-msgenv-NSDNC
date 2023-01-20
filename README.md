@@ -1,62 +1,64 @@
 
-## objc-msgenv-NSDNC
+# objc-msgenv-NSDNC
 
-<!--- Requires c++17. -->
+This library contains the wrapper code for sending messages to the macOS messaging environment (ME). The ready available pubsub between processes on macOS is the `NSDistributedNotificationCenter`.
 
-**Yes, the ME for macOS, is this simple!**
+> ### IPSME- Idempotent Publish/Subscribe Messaging Environment
+> https://dl.acm.org/doi/abs/10.1145/3458307.3460966
 
-I might be noted that in the code below, all messages are sent using an "IPSME" name and therefore not all notifications are received on the ME. This is unfortunately due to a bug in Apple's code. When "nil" is specified as name when subscribing as an observer, the notification center should send out all notifications when the app is not sandboxed. However, this is not the case.  Apple needs to update the documentation or fix the code.
-https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter/1414151-addobserver
-
-
-### Subscribing
+#### Subscribing
 ```
-#import "IPSME_MsgEnv.h"
-
-void handler_(NSString* nsstr_msg, NSString* object)
+void ipsme_handler_(id id_msg, NSString*)
 {
-	// object is unused (unless you make use of the hack)
-  
-	// ...
+	@try {
+		// add handlers ...
+	}
+	@catch (id ue) {
+		// ...
+		return;
+	}
+	NSLog(@"handler_: DROP! %@", [id_msg class]);
 }
 
-int main(int argc, char* argv[])
-{
-	// ...
-	
-	[IPSME_MsgEnv subscribe:handler_];
-	
-	// ...
-	
-	return 0;
-}
+[IPSME_MsgEnv subscribe:ipsme_handler_];
 ```
 
-If you would like to avoid using this wrapper functions, the equivalent native Objective-C code produces the same effect.
+It is by design that a participant receives the messages it has published itself. If this is not desirable, each message can contain a "referer" (sic) identifier and a clause added in the `ipsme_handler_` to drop those messages containing the participant's own referer id.
+
+#### Publishing
+```
+[IPSME_MsgEnv publish: ... ];
+```
+
+## Discussion
+
+The ME utilized, as so mentioned in the name, is `NSDistributedNotificationCenter`. This "library" is entirely optional. IPSME dictates the use of a readily available pubsub. That means the code is roughly equal to the following:
+
+ #### Subscribing
 ```
 {
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
-							    selector:@selector(recvd:)
-						 		name:@"IPSME"
-							      object:nil];
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self
+                                                        selector:@selector(recvd:)
+                                                            name:@"IPSME"
+                                                          object:nil];
 }
 
 - (void) recvd:(NSNotification *)notification {
 	NSLog(@"recvd %@", notification.userInfo[@"msg"]);
 }
-
 ```
+I have chosen to use the 'IPSME' channel name although the IPSME specification doesn't divide communication into different channels; all IPSME participants receive all messages. Each channel is equal to a different ME with respect to the IPSME conventions.
 
-----
+**Note:** Because there is a bug in Apple's code and `nil` is no longer accepted a filter for `name`. The workaround is to use "IPSME" as `name` and send the message in `userInfo`. The problem with this approach is that Apple has forbidden this approach for sandboxed applications.
 
-### Publishing
-```
-{
-	[IPSME_MsgEnv publish:nsstr_msg];
-}
-```
+> https://developer.apple.com/documentation/security/app_sandbox/protecting_user_data_with_app_sandbox?language=objc
+>
+> "Certain activities are forbidden by the operating system when an app runs in a sandbox.
+>  ... Sending `userInfo` dictionaries in distributed notifications to other tasks."
 
-If you would like to avoid using this wrapper functions, the equivalent native Objective-C code produces the same effect.
+IPSME dictates the use of any ready available pubsub. It is entirely possible to use a third-party pubsub via networking to avoid Apple's overly stringent measures.
+
+#### Publishing
 ```
 {
 	NSDictionary* nsdic_UserInfo= @{
@@ -67,3 +69,4 @@ If you would like to avoid using this wrapper functions, the equivalent native O
 	[dnc postNotificationName:@"IPSME" object:nil userInfo:nsdic_UserInfo deliverImmediately:TRUE];
 }
 ```
+
