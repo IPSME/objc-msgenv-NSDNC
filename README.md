@@ -1,31 +1,18 @@
-## objc-msgenv-NSDNC
-Requires c++17.
 
-**Yes, the ME for macOS, is this simple!**
+# objc-msgenv-NSDNC
 
-Unfortunately due to a bug in Apple's code. When "nil" is specified as name when subscribing as an observer, the notification center should send out all notifications when the app is not sandboxed. However, this is not the case.  Apple needs to update the documentation or fix the code.
+Unfortunately due to a bug in Apple's code, specifying `nil` as the `name` does not work. 
 
-https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter/1414151-addobserver
+When `nil` is specified as `name` when subscribing as an observer, the notification center **should** send out all notifications to the handler, when the app is not sandboxed. However, this is not the case.  
+Apple has been contacted and is aware of the bug, but had no plans of addressing it.
 
-```
-#import "msgenv_NSDNC.h"
+It would be good if Apple either fixed the code or updated the documentation.
 
-void handler_(NSString* nsstr_msg, NSString* object)
-{
-  // object is unused (unless you make use of the hack)
-  
-}
+> https://developer.apple.com/documentation/foundation/nsdistributednotificationcenter/1414151-addobserver
+> 
+> *"When `nil`, the notification center doesn’t use a notification’s name to decide whether to deliver it to the observer."*
 
-int main(int argc, char* argv[])
-{
-  @autoreleasepool
-  {
-    [IPSME_MsgEnv subscribe:handler_];
+### As a workaround, please use the `userInfo` branch of this repository
 
-    // ...
-    
-    [IPSME_MsgEnv publish:nsstr_msg];
-  }
-  return 0;
-}
-```
+https://github.com/IPSME/objc-msgenv-NSDNC/tree/userInfo
+
