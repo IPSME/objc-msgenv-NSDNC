@@ -1,5 +1,5 @@
 
-# objc-msgenv-NSDNC
+# objc-msgenv-NSDNC :: UE5
 
 This library contains the wrapper code for sending messages to the macOS messaging environment (ME). The ready available pubsub between processes on macOS is the `NSDistributedNotificationCenter`.
 
@@ -8,26 +8,28 @@ This library contains the wrapper code for sending messages to the macOS messagi
 
 #### Subscribing
 ```
-void ipsme_handler_(id id_msg, NSString*)
+void handler_(const char* psz_msg, void* p_void)
 {
-	@try {
+	try
+	{
 		// add handlers ...
 	}
-	@catch (id ue) {
-		// ...
-		return;
+	catch (...) {
+		UE_LOG(LogTemp, Error, TEXT("handler_(): Exception "));
 	}
-	NSLog(@"handler_: DROP! %@", [id_msg class]);
+
+	 UE_LOG(LogTemp, Warning, TEXT("handler_(): DROP! [%s]"), *FString(psz_msg) );
 }
 
-[IPSME_MsgEnv subscribe:ipsme_handler_];
+
+IPSME_MsgEnv::subscribe(handler_, NULL);
 ```
 
 It is by design that a participant receives the messages it has published itself. If this is not desirable, each message can contain a "referer" (sic) identifier and a clause added in the `ipsme_handler_` to drop those messages containing the participant's own referer id.
 
 #### Publishing
 ```
-[IPSME_MsgEnv publish: ... ];
+IPSME_MsgEnv::publish("...");
 ```
 
 ## Discussion
